@@ -14,13 +14,7 @@ class HomeAssistant extends Base {
    * @returns {Array<Object>}
    */
   async list() {
-    const res = await this.get(
-      this.api_url,
-      'shopping_list',
-      null,
-      this.headers
-    );
-
+    const res = await this.get(this.api_url, '/shopping_list', null, this.headers);
     return res.data.reverse();
   }
 
@@ -30,7 +24,16 @@ class HomeAssistant extends Base {
    * @param {string} name
    */
   async create(name) {
-    await this.post(this.api_url, 'shopping_list/item', { name }, this.headers);
+    await this.post(this.api_url, '/services/shopping_list/add_item', { name }, this.headers);
+  }
+
+  /**
+   * Print item list.
+   *
+   * @param {string} name
+   */
+  async print(entityId) {
+    await this.post(this.api_url, '/services/script/turn_on', { entity_id: entityId }, this.headers);
   }
 
   /**
@@ -39,7 +42,13 @@ class HomeAssistant extends Base {
   async clear() {
     await this.post(
       this.api_url,
-      'shopping_list/clear_completed',
+      '/services/shopping_list/complete_all',
+      null,
+      this.headers
+    );
+    await this.post(
+      this.api_url,
+      '/services/shopping_list/clear_completed_items',
       null,
       this.headers
     );

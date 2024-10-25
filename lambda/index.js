@@ -22,7 +22,7 @@ const LaunchRequestHandler = {
   },
   handle(handlerInput) {
     wasOpened = true;
-    const speakOutput = 'Hier ist deine Einkaufsliste, was möchstest du tun?';
+    const speakOutput = 'Voici votre liste de courses, que souhaitez-vous faire ?';
     return handlerInput.responseBuilder
       .speak(speakOutput)
       .reprompt(speakOutput)
@@ -48,10 +48,10 @@ const AddItemIntentHandler = {
     try {
       // Add item to list
       await api.create(item);
-      speakOutput = `Ich habe ${item} hinzugefügt.`;
-      speakOutput += wasOpened ? ' Noch etwas?' : '';
+      speakOutput = `J'ai ajouté ${item}.`;
+      speakOutput += wasOpened ? 'Autre chose?' : '';
     } catch (err) {
-      speakOutput = 'Sorry, da ist etwas schief gelaufen';
+      speakOutput = 'Désolé, quelque chose s\'est mal passé';
       console.error('Error adding item');
       console.error(err);
     }
@@ -61,7 +61,7 @@ const AddItemIntentHandler = {
 
     // Ask for more if opened
     if (wasOpened) {
-      rb = rb.reprompt('Noch etwas?');
+      rb = rb.reprompt('Autre chose?');
     }
 
     return rb.getResponse();
@@ -92,23 +92,23 @@ const ListItemsIntentHandler = {
       // Output
       if (totalItemsAmount === 0) {
         // List is empty
-        speakOutput = `Die Einkaufsliste ist leer.`;
+        speakOutput = `La liste de courses est vide`;
       } else if (totalItemsAmount === 1) {
         // List has one item
-        speakOutput = `Es ist ein Artikel auf deiner Liste: ${itemsToReport[0]}`;
+        speakOutput = `Il y a un article sur ta liste: ${itemsToReport[0]}`;
       } else {
-        const itemsListed = itemsToReport.slice(0, -1).join(', ') + ' und ' + itemsToReport.slice(-1);
+        const itemsListed = itemsToReport.slice(0, -1).join(', ') + ' et ' + itemsToReport.slice(-1);
         if (totalItemsAmount <= maxNoOfItemsReported) {
           // List all items on the list (amount below maxNoOfItemsReported)
-          speakOutput = `Es sind ${totalItemsAmount} Artikel auf deiner Liste: ${itemsListed}`;
+          speakOutput = `Il y a ${totalItemsAmount} articles sur ta liste: ${itemsListed}`;
         } else {
           // More items than maxNoOfItemsReported are on the list. Change text and only list the last x ones.
-          speakOutput = `Es sind ${totalItemsAmount} Artikel auf deiner Liste. Die letzten ${itemsToReportAmount} sind: ${itemsListed}`;
+          speakOutput = `Il y a ${totalItemsAmount} articles sur ta liste. Les derniers ${itemsToReportAmount} sont: ${itemsListed}`;
         }
       }
       
     } catch (err) {
-      speakOutput = 'Sorry, da ist etwas schief gelaufen';
+      speakOutput = 'Désolé, quelque chose a mal tourné';
       console.error(err);
     }
 
@@ -116,10 +116,35 @@ const ListItemsIntentHandler = {
 
     // Ask for more if opened
     if (wasOpened) {
-      rb = rb.reprompt('Noch etwas?');
+      rb = rb.reprompt('Autre chose?');
     }
 
     return rb.getResponse();
+  },
+};
+
+const PrintItemsIntentHandler = {
+  canHandle(handlerInput) {
+    return (
+      Alexa.getRequestType(handlerInput.requestEnvelope) === 'IntentRequest' &&
+      Alexa.getIntentName(handlerInput.requestEnvelope) === 'PrintItemsIntent'
+    );
+  },
+  async handle(handlerInput) {
+    // Response container
+    let speakOutput;
+
+    try {
+      // Call Home Assistant API to print shopping list
+      const entityId = 'script.imprimer_la_liste_de_courses'; // Replace by your Home Assistant script entity_id
+      await api.print(entityId);
+      speakOutput = 'J\'imprime votre liste de courses maintenant.';
+    } catch (err) {
+      speakOutput = 'Désolé, je n\'ai pas pu imprimer votre liste.';
+      console.error('Error printing shopping list', err);
+    }
+
+    return handlerInput.responseBuilder.speak(speakOutput).getResponse();
   },
 };
 
@@ -138,9 +163,9 @@ const ClearCompletedItemsIntentHandler = {
     try {
       // Add item to list
       await api.clear();
-      speakOutput = 'Liste aufgeräumt';
+      speakOutput = 'Liste nettoyée';
     } catch (err) {
-      speakOutput = 'Sorry, da ist etwas schief gelaufen';
+      speakOutput = 'Désolé, quelque chose a mal tourné';
       console.error('Error clearing list');
       console.error(err);
     }
@@ -150,7 +175,7 @@ const ClearCompletedItemsIntentHandler = {
 
     // Ask for more if opened
     if (wasOpened) {
-      rb = rb.reprompt('Noch etwas?');
+      rb = rb.reprompt('Autre chose?');
     }
 
     return rb.getResponse();
@@ -166,7 +191,7 @@ const HelpIntentHandler = {
   },
   handle(handlerInput) {
     const speakOutput =
-      'Aktuell kann ich dir leider noch nicht helfen. Tut mir Leid.';
+      'Malheureusement, je ne peux pas vous aider pour le moment. Je suis désolé.';
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -187,7 +212,7 @@ const CancelAndStopIntentHandler = {
     );
   },
   handle(handlerInput) {
-    const speakOutput = 'Bis bald!';
+    const speakOutput = 'À bientôt!';
     return handlerInput.responseBuilder.speak(speakOutput).getResponse();
   },
 };
@@ -238,7 +263,7 @@ const ErrorHandler = {
   },
   handle(handlerInput, error) {
     console.error(`~~~~ Error handled: ${error.stack}`);
-    const speakOutput = `Sorry, I had trouble doing what you asked. Please try again.`;
+    const speakOutput = `Désolé, j'ai eu du mal à faire ce que vous m'avez demandé. Veuillez réessayer.`;
 
     return handlerInput.responseBuilder
       .speak(speakOutput)
@@ -256,6 +281,7 @@ exports.handler = Alexa.SkillBuilders.custom()
     AddItemIntentHandler,
     ListItemsIntentHandler,
     ClearCompletedItemsIntentHandler,
+    PrintItemsIntentHandler,
     HelpIntentHandler,
     CancelAndStopIntentHandler,
     SessionEndedRequestHandler,

@@ -1,0 +1,75 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "panier magique",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AddItemIntent",
+                    "slots": [
+                        {
+                            "name": "item",
+                            "type": "AMAZON.Food"
+                        }
+                    ],
+                    "samples": [
+                        "{item}",
+                        "ajoute {item} à ma liste",
+                        "ajoute {item} à la liste",
+                        "ajoute {item}",
+                        "met {item} sur ma liste"
+                    ]
+                },
+                {
+                    "name": "ListItemsIntent",
+                    "slots": [],
+                    "samples": [
+                        "Qu'est-ce qu'il y a sur la liste",
+                        "Qu'y a-t-il sur ma liste",
+                        "donne moi ma liste de course",
+                        "Quel est le contenu de ma liste de course"
+                    ]
+                },
+                {
+                    "name": "PrintItemsIntent",
+                    "slots": [],
+                    "samples": [
+                        "imprime ma liste de courses",
+                        "j'aimerais imprimer ma liste",
+                        "imprimer ma liste",
+                        "imprimer la liste"
+                    ]
+                },
+                {
+                    "name": "ClearCompletedItemsIntent",
+                    "slots": [],
+                    "samples": [
+                        "Supprime toute ma liste de courses",
+                        "Vide ma liste",
+                        "Nettoie ma liste"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                }
+            ],
+            "types": []
+        }
+    }
+}

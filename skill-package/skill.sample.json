@@ -2,19 +2,18 @@
   "manifest": {
     "publishingInformation": {
       "locales": {
-        "de-DE": {
-          "summary": "Selbst gehostete Einkaufsliste",
+        "fr-FR": {
+          "summary": "Alexa Shopping List Companion",
           "examplePhrases": [
-            "Alexa öffne Meine Einkaufsliste",
-            "hallo",
-            "hilfe"
+            "Alexa ouvre panier magique",
+            "Alexa lance panier magique"
           ],
-          "name": "Meine Einkaufsliste",
+          "name": "Ma liste de course",
           "description": "Custom shopping list"
         }
       },
       "isAvailableWorldwide": true,
-      "testingInstructions": "Sample Testing Instructions.",
+      "testingInstructions": "Instructions pour exemples de test",
       "category": "SHOPPING",
       "distributionCountries": []
     },

@@ -1,0 +1,12 @@
+[Unit]
+Description=Print Server
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/opt
+ExecStart=/usr/bin/python3 /opt/print_server.py
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -1,6 +1,8 @@
 # Alexa Shopping List Companion
 
-This is an extensible Alexa Companion Skill.
+This is an extensible Alexa Companion Skill (forked from https://github.com/paranerd/alexa-skill-shopping-list)
+  - invocation name changed for "Panier Magique" to avoid to launch Alexa shopping list default skill
+  - add feature to print shopping list on thermal printer with Home Assistant automation script
 
 ## Prerequisites
 
@@ -103,11 +105,63 @@ This is an extensible Alexa Companion Skill.
 ask dialog --locale de-DE
 ```
 
+## Home Assistant Configuration
+
+### Configure Thermal printer
+
+#### Prerequisites
+
+- I'm using Citizen CT-S310 connected by USB to RaspberryPi Zero W
+
+#### Configure Raspberry Pi
+
+1. Create python flask server script (copy print_server.py to /opt or other path but you need to adapt service file print_server.service)
+1. From print_server.py replace <YOUR HOME ASSISTANT URL> by your Home Assistant URL (HTTPS needed)
+1. From print_server.py replace <YOUR HOME ASSISTANT LONG-LIVE TOKEN> by your Home Assistant long live token
+1. Create service file (copy script print_server.service to /etc/systemd/system/)
+1. Reload Service list: systemctl daemon-reload
+1. Enable Service: systemctl enable print_server.service
+1. Start Service: systemctl start print_server.service
+1. Try to join service by joining url : http://<ip of your raspberryPI>:5000/list
+1. Try to print by joining url : http://<ip of your raspberryPI>:5000/print (you should get empty list if your home assistant shopping list is empty)
+
+#### Configure Home Assistant Automation
+
+1. Create Home Assistant REST command to call print url : 
+```python
+rest_command:
+  print_shopping_list:
+    url: "http://<your raspberryPI IP>:5000/print"
+```
+1. Create Home Assistant automation script to call REST command:
+```python
+alias: Imprimer la liste de courses
+sequence:
+  - action: rest_command.print_shopping_list
+    data: {}
+description: ""
+icon: mdi:cloud-print
+```
+1. if you have changed script id "Imprimer la liste de courses" you need to change id also on lambda/index.js and then deploy again lambda with command ask deploy (please refer to "Existing skill" deployment process)
+```javascript
+      // Call Home Assistant API to print shopping list
+      const entityId = 'script.imprimer_la_liste_de_courses'; // Replace by your Home Assistant script entity_id
+```
+
+### HowTo use the skill
+
+1. Launch the skill : "Alexa, ouvre panier magique"
+1. Add item : "ajoute café à ma liste"
+1. Print the list : "imprime ma liste de courses"
+1. Clean the list : "Vide ma liste"
+
 ## Backend support
 
 - [Home Assistant Shopping List](https://www.home-assistant.io/integrations/shopping_list/)
+- [Home Assistant RESTful Command](https://www.home-assistant.io/integrations/rest_command/)
 - [To-Do-List](https://github.com/paranerd/to-do-list)
 
 ## Language support
 
-- German
+- German (to change in locales from skill.json)
+- French (by default)
