@@ -116,14 +116,14 @@ ask dialog --locale de-DE
 #### Configure Raspberry Pi
 
 1. Create python flask server script (copy print_server.py to /opt or other path but you need to adapt service file print_server.service)
-1. From print_server.py replace <YOUR HOME ASSISTANT URL> by your Home Assistant URL (HTTPS needed)
-1. From print_server.py replace <YOUR HOME ASSISTANT LONG-LIVE TOKEN> by your Home Assistant long live token
+1. From print_server.py replace `<YOUR HOME ASSISTANT URL>` by your Home Assistant URL (HTTPS needed)
+1. From print_server.py replace `<YOUR HOME ASSISTANT LONG-LIVE TOKEN>` by your Home Assistant long live token
 1. Create service file (copy script print_server.service to /etc/systemd/system/)
 1. Reload Service list: systemctl daemon-reload
 1. Enable Service: systemctl enable print_server.service
 1. Start Service: systemctl start print_server.service
-1. Try to join service by joining url : http://<ip of your raspberryPI>:5000/list
-1. Try to print by joining url : http://<ip of your raspberryPI>:5000/print (you should get empty list if your home assistant shopping list is empty)
+1. Try to join service by joining url : http://`<ip of your raspberryPI>`:5000/list
+1. Try to print by joining url : http://`<ip of your raspberryPI>`:5000/print (you should get empty list if your home assistant shopping list is empty)
 
 #### Configure Home Assistant Automation
 
